@@ -1,4 +1,3 @@
-// 文件路径: [Project Root]/app/build.gradle.kts
 
 plugins {
     // 基础插件
@@ -50,7 +49,6 @@ android {
         compose = true
     }
     composeOptions {
-        // 🚨 关键修正：从 1.5.1 修正为 1.5.4，解决 Unresolved reference 错误
         kotlinCompilerExtensionVersion = "1.5.4"
     }
     packaging {
@@ -66,7 +64,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
     implementation("androidx.activity:activity-compose:1.9.0")
 
-    // Compose BOM (统一管理 Compose 版本，推荐)
+    // Compose BOM
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     implementation(composeBom)
 
@@ -79,7 +77,7 @@ dependencies {
 
     implementation("com.google.android.material:material:1.12.0")
 
-    // Coil for 异步图片加载 (用于 AsyncImage)
+    // Coil异步图片加载
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     // Dagger Hilt 依赖
