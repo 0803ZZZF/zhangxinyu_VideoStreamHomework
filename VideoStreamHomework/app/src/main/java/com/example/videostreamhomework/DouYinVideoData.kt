@@ -16,7 +16,7 @@ data class VideoItem(
     val isImageCard: Boolean    // 是否是图片卡片
 )
 
-// 提供假数据（运行时会加载这些数据）
+// 提供假数据
 object DouYinVideoData {
 
     private val VIDEO_URLS = listOf(
