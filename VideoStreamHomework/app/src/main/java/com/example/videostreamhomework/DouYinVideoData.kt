@@ -5,7 +5,7 @@ import java.util.Locale
 // 视频/图片数据模型
 data class VideoItem(
     val coverUrl: String,       // 封面图URL
-    val videoUrl: String,       // 视频URL（图片卡片可为空）
+    val videoUrl: String,       // 视频URL
     val authorName: String,     // 作者名
     val authorAvatar: String,   // 作者头像URL
     val likeCount: Int,         // 点赞数
@@ -13,13 +13,12 @@ data class VideoItem(
     val collectCount: Int,      // 收藏数
     val shareCount: Int,        // 分享数
     val videoTitle: String,     // 视频标题
-    val isImageCard: Boolean    // 是否是图片卡片（不是视频）
+    val isImageCard: Boolean    // 是否是图片卡片
 )
 
 // 提供假数据（运行时会加载这些数据）
 object DouYinVideoData {
 
-    // 【更新】使用你提供的视频URL资源池
     private val VIDEO_URLS = listOf(
         "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4", // 稳定可用
         "https://media.w3.org/2010/05/sintel/trailer.mp4",
@@ -45,13 +44,6 @@ object DouYinVideoData {
         )
     }
 
-    // 分页拉取方法（逻辑不变）
-    /**
-     * 根据页码和页面大小，返回对应页的数据。
-     * @param page 页码 (从 1 开始)
-     * @param pageSize 每页包含的项目数
-     * @return 对应页的视频列表
-     */
     fun getVideosByPage(page: Int, pageSize: Int = 10): List<VideoItem> {
         val startIndex = (page - 1) * pageSize
         val endIndex = startIndex + pageSize
@@ -65,8 +57,7 @@ object DouYinVideoData {
             endIndex.coerceAtMost(ALL_FAKE_VIDEOS.size)
         )
     }
-
-    // 保留兼容性方法
+    
     fun getFakeVideos(): List<VideoItem> {
         return getVideosByPage(1, 10)
     }
