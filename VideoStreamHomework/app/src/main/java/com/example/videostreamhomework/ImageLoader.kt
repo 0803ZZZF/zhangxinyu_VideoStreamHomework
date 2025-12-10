@@ -3,7 +3,6 @@ package com.example.videostreamhomework
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -13,8 +12,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.net.HttpURLConnection
-import java.net.URL
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
 
 @Composable
 fun loadNetworkImage(url: String): ImageBitmap? {
@@ -42,6 +42,7 @@ fun loadLocalImage(resId: Int): ImageBitmap? {
     LaunchedEffect(resId) {
         withContext(Dispatchers.IO) {
             imageBitmap.value = try {
+
                 BitmapFactory.decodeResource(context.resources, resId).asImageBitmap()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -52,15 +53,29 @@ fun loadLocalImage(resId: Int): ImageBitmap? {
     return imageBitmap.value
 }
 
+// 网络图片下载实现（使用 OkHttp）
 private fun downloadImage(context: Context, url: String): Bitmap? {
+    // 创建 OkHttp 客户端
+    val client = OkHttpClient.Builder()
+        .connectTimeout(5, java.util.concurrent.TimeUnit.SECONDS) // 连接超时
+        .readTimeout(5, java.util.concurrent.TimeUnit.SECONDS)    // 读取超时
+        .build()
+
+    // 构建请求
+    val request = Request.Builder()
+        .url(url)
+        .build()
+
     return try {
-        val connection = URL(url).openConnection() as HttpURLConnection
-        connection.connectTimeout = 5000
-        connection.readTimeout = 5000
-        connection.doInput = true
-        connection.connect()
-        val inputStream = connection.inputStream
-        BitmapFactory.decodeStream(inputStream) 
+        // 发送请求并获取响应
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                throw IOException("请求失败: ${response.code}")
+            }
+            // 从响应体获取输入流并解码为 Bitmap
+            val inputStream = response.body?.byteStream()
+            BitmapFactory.decodeStream(inputStream)
+        }
     } catch (e: Exception) {
         e.printStackTrace()
         null
