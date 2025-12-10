@@ -53,7 +53,7 @@ fun loadLocalImage(resId: Int): ImageBitmap? {
     return imageBitmap.value
 }
 
-// 网络图片下载实现（使用 OkHttp）
+// 网络图片下载实现（采用OkHttp）
 private fun downloadImage(context: Context, url: String): Bitmap? {
     // 创建 OkHttp 客户端
     val client = OkHttpClient.Builder()
